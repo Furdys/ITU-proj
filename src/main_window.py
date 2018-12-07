@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QPushButton, QHBoxLayout, QWidget
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from sidebar import Sidebar
 
 
@@ -19,8 +21,8 @@ class MainWindow(QMainWindow):
         playingFiled = QLabel('Playing field')
         sidebar = Sidebar()
 
-        layout.addWidget(playingFiled)
-        layout.addWidget(sidebar)
+        layout.addWidget(playingFiled, 3)   # Takes 3 times more space than sidebar
+        layout.addWidget(sidebar, 1)
 
         self.setCentralWidget(QWidget())
         self.centralWidget().setLayout(layout)
