@@ -74,7 +74,7 @@ class HistoryPanel(InfoPanel):
             table.setItem(row, 1, QTableWidgetItem(move[1]))
             row += 1
 
-        table.resizeColumnsToContents()
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # Stretch to 100% width available
 
         self.layout().addWidget(QLabel('Historie tahů'))
         self.layout().addWidget(table)

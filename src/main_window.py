@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('Chess')
-        self.resize(500, 400)
+        self.resize(700, 500)
 
         layout = QHBoxLayout()
 
