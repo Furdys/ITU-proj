@@ -49,11 +49,36 @@ class TimePanel(InfoPanel):
         self.layout().addWidget(onTurnLabel)
         self.layout().addWidget(remainingTimeLabel)
 
+
 class HistoryPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
         super(HistoryPanel, self).__init__(*args, **kwargs)
 
+        table = QTableWidget()
+
+        moves = [
+            ('g3', 'e5'),
+            ('Bg2', 'f5'),
+            ('Nh3', 'c5'),
+            ('O-O', 'Ne7'),
+        ]
+
+        table.setColumnCount(2)
+        table.setRowCount(len(moves))
+        table.horizontalHeader().setVisible(False)
+        table.verticalHeader().setVisible(False)
+
+        row = 0
+        for move in moves:
+            table.setItem(row, 0, QTableWidgetItem(move[0]))
+            table.setItem(row, 1, QTableWidgetItem(move[1]))
+            row += 1
+
+        table.resizeColumnsToContents()
+
         self.layout().addWidget(QLabel('Historie tahů'))
+        self.layout().addWidget(table)
+
 
 class OpponentPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
