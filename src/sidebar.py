@@ -2,6 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import math
+import os
 
 
 class Sidebar(QWidget):
@@ -192,10 +193,16 @@ class OpponentPanel(InfoPanel):
         opponentNameLabel = QLabel('Jan Novák', self)
         opponentNameLabel.setAlignment(Qt.AlignCenter)
 
+        opponentAvatarLabel = QLabel(self)
+        opponentAvatarPixmap = QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/avatar.png')))
+        opponentAvatarLabel.setPixmap(opponentAvatarPixmap.scaled(100, 100, Qt.KeepAspectRatio))
+        opponentAvatarLabel.setAlignment(Qt.AlignCenter)
+
         opponentWinsCountLabel = QLabel('1337 výher', self)
         opponentWinsCountLabel.setAlignment(Qt.AlignCenter)
 
         self.layout().addWidget(opponentNameLabel)
+        self.layout().addWidget(opponentAvatarLabel)
         self.layout().addWidget(opponentWinsCountLabel)
 
 
