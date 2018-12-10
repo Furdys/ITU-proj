@@ -14,13 +14,23 @@ class MenuWindow(QMainWindow):
         self.setWindowTitle('Chess Menu')
         self.resize(700, 500)
         self.setCentralWidget(QWidget())
+        self.stacked_layout = QStackedLayout()
+        self.centralWidget().setLayout(self.stacked_layout)
 
         self.setStyleSheet("background-color: #272C38")
-        self.createLayout()
+        self.createMenuLayout()
+        self.createSettingsLayout()
+
+        #self.stacked_layout = QStackedLayout()
+        #self.stacked_layout.addWidget(self.selectMenuWidget)
+
+        #self.setCentralWidget(QWidget())
+        #self.centralWidget().setLayout(self.stacked_layout)
+
         self.show()
 
 
-    def createLayout(self):
+    def createMenuLayout(self):
         menu = QWidget()
         menu.setStyleSheet("""
             QWidget {
@@ -37,8 +47,6 @@ class MenuWindow(QMainWindow):
                            """)
 
         grid = QGridLayout()
-
-        print(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))
         grid.setSpacing(25)
         playButton = QPushButton('Hrát', self)
         playButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))))
@@ -48,7 +56,7 @@ class MenuWindow(QMainWindow):
         settingsButton = QPushButton('Nastavení', self)
         settingsButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/settingsIcon.png')))))
         settingsButton.setIconSize(QSize(40,40))
-        settingsButton.clicked.connect(self.showSettings_onClick)
+        settingsButton.clicked.connect(self.showSettings)
 
         testbutton2 = QPushButton('Test 2', self)
         testbutton3 = QPushButton('Test 3', self)
@@ -69,7 +77,10 @@ class MenuWindow(QMainWindow):
         vbox.addLayout(hbox)
         vbox.addStretch()
 
-        self.centralWidget().setLayout(vbox)
+        self.selectMenuWidget = QWidget()
+        self.selectMenuWidget.setLayout(vbox)
+        self.centralWidget().layout().addWidget(self.selectMenuWidget)
+        #self.centralWidget().setLayout(vbox)
 
     @pyqtSlot()
     def chessboardWindow_onClick(self):
@@ -77,9 +88,52 @@ class MenuWindow(QMainWindow):
         self.cams.show()
         self.close()
 
-    def showSettings_onClick(self):
+    @pyqtSlot()
+    def showSettings(self):
+        self.stacked_layout.setCurrentIndex(1)
+
+    def createSettingsLayout(self):
+        settings = QWidget()
+        settings.setStyleSheet("""
+            QWidget {
+                background-color: #1F232D;
+            }
+
+            QPushButton {
+                background-color: #3C6478;
+                font-weight: bold;
+                color: #FFF;
+                height: 48px;
+                width: 200px;
+            }
+                           """)
+
+        grid = QGridLayout()
+        grid.setSpacing(25)
 
 
+        returnButton = QPushButton('Zpět', self)
+        returnButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/returnIcon.png')))))
+        returnButton.setIconSize(QSize(40,40))
+        returnButton.clicked.connect(self.returnToMenu)
+        grid.addWidget(returnButton, 0,1)
+        settings.setLayout(grid)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(QWidget(), 1)
+        hbox.addWidget(settings, 1)
+        hbox.addWidget(QWidget(), 1)
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addStretch()
+
+        self.selectSettingsWidget = QWidget()
+        self.selectSettingsWidget.setLayout(vbox)
+        self.centralWidget().layout().addWidget(self.selectSettingsWidget)
+
+    @pyqtSlot()
+    def returnToMenu(self):
+        self.stacked_layout.setCurrentIndex(0)
 
 
 
