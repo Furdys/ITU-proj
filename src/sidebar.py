@@ -28,11 +28,6 @@ class Sidebar(QWidget):
         self.setLayout(layout)
 
 
-class InfoPanel(QWidget):
-    def __init__(self, *args, **kwargs):
-        super(InfoPanel, self).__init__(*args, **kwargs)
-
-
 class InfoPanel(QFrame):    # QFrame instead of QWidget to fill content margin with bg color
     def __init__(self, *args, **kwargs):
         super(InfoPanel, self).__init__(*args, **kwargs)
@@ -111,7 +106,7 @@ class LabelTimeIndicator(QLabel):
     def reset(self):
         self.secondsRemaining = int(self.parent().roundLength / 1000)
         self.updateText()
-        
+
         self.timer.start(1000)
 
 
@@ -139,9 +134,9 @@ class CircularTimeIndicator(QWidget):
         painter.setPen(pen)
 
         diameter = min(self.width(), self.height()) - lineWidthHalf*2
+        xPosStart = math.floor((self.width() - diameter) / 2)
 
-
-        rectangle = QRectF(lineWidthHalf, lineWidthHalf, diameter, diameter)
+        rectangle = QRectF(xPosStart, lineWidthHalf, diameter, diameter)
         angle = self.parent().roundTimer.remainingTime() / self.parent().roundLength * 360
 
 
