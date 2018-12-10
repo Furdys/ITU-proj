@@ -35,19 +35,41 @@ class InfoPanel(QFrame):
         self.setLineWidth(2)
         self.setLayout(QVBoxLayout())
 
+
 class TimePanel(InfoPanel):
+    secondsRemaining = 15
+
     def __init__(self, *args, **kwargs):
         super(TimePanel, self).__init__(*args, **kwargs)
 
         onTurnLabel = QLabel('Jste na řadě!')
         onTurnLabel.setAlignment(Qt.AlignCenter)
 
-        remainingTimeLabel = QLabel('15 sekund');
-        remainingTimeLabel.setAlignment(Qt.AlignCenter)
+        timer = QTimer(self)
+        timer.timeout.connect(self.subSecond)
+        timer.start(1000)
 
+        self.secondsRemaining = 15
+        self.remainingTimeLabel = QLabel()
+        self.remainingTimeLabel.setAlignment(Qt.AlignCenter)
+        self.redrawTime()
 
         self.layout().addWidget(onTurnLabel)
-        self.layout().addWidget(remainingTimeLabel)
+        self.layout().addWidget(self.remainingTimeLabel)
+
+    def subSecond(self):
+        if self.secondsRemaining > 0:
+            self.secondsRemaining -= 1
+
+        self.redrawTime()
+
+    def redrawTime(self):
+        if self.secondsRemaining > 4 or self.secondsRemaining == 0:
+            self.remainingTimeLabel.setText('{0} sekund'.format(self.secondsRemaining))
+        elif self.secondsRemaining > 1:
+            self.remainingTimeLabel.setText('{0} sekundy'.format(self.secondsRemaining))
+        else:
+            self.remainingTimeLabel.setText('{0} sekunda'.format(self.secondsRemaining))
 
 
 class HistoryPanel(InfoPanel):
