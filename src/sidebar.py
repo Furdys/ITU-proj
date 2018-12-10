@@ -1,6 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+import math
 
 
 class Sidebar(QWidget):
@@ -43,75 +44,111 @@ class InfoPanel(QFrame):    # QFrame instead of QWidget to fill content margin w
 
 
 class TimePanel(InfoPanel):
-    secondsRemaining = 15
 
     def __init__(self, *args, **kwargs):
         super(TimePanel, self).__init__(*args, **kwargs)
 
+        self.roundLength = 15000
+
+        self.roundTimer = QTimer(self)
+        self.roundTimer.timeout.connect(self.resetRound)
+
+        self.labelTimeIndicator = LabelTimeIndicator(self)
+        self.circularTimeIndicator = CircularTimeIndicator(self)
+
+        self.resetRound()
+
+
+
+
+
         onTurnLabel = QLabel('Jste na řadě!', self)
         onTurnLabel.setAlignment(Qt.AlignCenter)
 
-        timer = QTimer(self)
-        timer.timeout.connect(self.subSecond)
-        timer.start(1000)
 
-        self.secondsRemaining = 15
-        self.remainingTimeLabel = QLabel(self)
-        self.remainingTimeLabel.setAlignment(Qt.AlignCenter)
-        self.redrawTime()
+
 
         self.layout().addWidget(onTurnLabel)
-        self.layout().addWidget(CircularTimeIndicator())
-        self.layout().addWidget(self.remainingTimeLabel)
+        self.layout().addWidget(self.circularTimeIndicator)
+        self.layout().addWidget(self.labelTimeIndicator)
+
+    def resetRound(self):
+        self.roundTimer.start(self.roundLength)
+
+        self.labelTimeIndicator.reset()
+        self.circularTimeIndicator.reset()
+
+
+class LabelTimeIndicator(QLabel):
+    def __init__(self, *args, **kwargs):
+        super(LabelTimeIndicator, self).__init__(*args, **kwargs)
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.subSecond)
+
+        self.secondsRemaining = 0
+        self.reset()
+
+
+        self.setAlignment(Qt.AlignCenter)
+
+        self.updateText()
 
     def subSecond(self):
         if self.secondsRemaining > 0:
             self.secondsRemaining -= 1
 
-        self.redrawTime()
+        self.updateText()
 
-    def redrawTime(self):
+    def updateText(self):
         if self.secondsRemaining > 4 or self.secondsRemaining == 0:
-            self.remainingTimeLabel.setText('{0} sekund'.format(self.secondsRemaining))
+            self.setText('{0} sekund'.format(self.secondsRemaining))
         elif self.secondsRemaining > 1:
-            self.remainingTimeLabel.setText('{0} sekundy'.format(self.secondsRemaining))
+            self.setText('{0} sekundy'.format(self.secondsRemaining))
         else:
-            self.remainingTimeLabel.setText('{0} sekunda'.format(self.secondsRemaining))
+            self.setText('{0} sekunda'.format(self.secondsRemaining))
+
+    def reset(self):
+        self.secondsRemaining = int(self.parent().roundLength / 1000)
+        self.updateText()
+        
+        self.timer.start(1000)
+
 
 class CircularTimeIndicator(QWidget):
     def __init__(self, *args, **kwargs):
         super(CircularTimeIndicator, self).__init__(*args, **kwargs)
 
         self.sampling = 100
-        self.timer = 15000
 
-        timer = QTimer(self)
-        timer.timeout.connect(self.subTimer)
-        timer.start(self.sampling)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.repaint)
+        self.timer.start(self.sampling)
 
-    def subTimer(self):
-        if self.timer >= self.sampling:
-            self.timer -= self.sampling
-            self.repaint()
 
     def paintEvent(self, event):
+        lineWidth = 2
+        lineWidthHalf = math.ceil(lineWidth/2)
 
         painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
 
         pen = QPen()
-        pen.setWidth(2)
+        pen.setWidth(lineWidth)
         pen.setColor(Qt.white)
         painter.setPen(pen)
 
-        diameter = min(self.width(), self.height())
+        diameter = min(self.width(), self.height()) - lineWidthHalf*2
 
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.begin(self)
-        rectange = QRectF(0, 0, diameter, diameter)
-        angle = self.timer / 15000 * 360
-        painter.drawArc(rectange, 90*16, angle*16)
-        painter.end()
 
+        rectangle = QRectF(lineWidthHalf, lineWidthHalf, diameter, diameter)
+        angle = self.parent().roundTimer.remainingTime() / self.parent().roundLength * 360
+
+
+        painter.drawArc(rectangle, 90*16, angle*16)
+
+    def reset(self):
+        self.timer.start(self.sampling)
 
 class HistoryPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
