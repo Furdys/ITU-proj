@@ -28,6 +28,8 @@ class Sidebar(QWidget):
 
         self.setLayout(layout)
 
+        self.setMinimumWidth(180)
+
 
 class InfoPanel(QFrame):    # QFrame instead of QWidget to fill content margin with bg color
     def __init__(self, *args, **kwargs):
@@ -93,7 +95,6 @@ class LabelTimeIndicator(QLabel):
         self.secondsRemaining = 0
         self.reset()
 
-
         self.setAlignment(Qt.AlignCenter)
 
         self.updateText()
@@ -123,12 +124,13 @@ class CircularTimeIndicator(QWidget):
     def __init__(self, *args, **kwargs):
         super(CircularTimeIndicator, self).__init__(*args, **kwargs)
 
+        self.setMinimumSize(40, 40)
+
         self.sampling = 100
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.repaint)
         self.timer.start(self.sampling)
-
 
     def paintEvent(self, event):
         lineWidth = 2
@@ -148,11 +150,11 @@ class CircularTimeIndicator(QWidget):
         rectangle = QRectF(xPosStart, lineWidthHalf, diameter, diameter)
         angle = self.parent().roundTimer.remainingTime() / self.parent().roundLength * 360
 
-
         painter.drawArc(rectangle, 90*16, angle*16)
 
     def reset(self):
         self.timer.start(self.sampling)
+
 
 class HistoryPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
@@ -193,17 +195,24 @@ class OpponentPanel(InfoPanel):
         opponentNameLabel = QLabel('Jan Novák', self)
         opponentNameLabel.setAlignment(Qt.AlignCenter)
 
-        opponentAvatarLabel = QLabel(self)
-        opponentAvatarPixmap = QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/avatar.png')))
-        opponentAvatarLabel.setPixmap(opponentAvatarPixmap.scaled(100, 100, Qt.KeepAspectRatio))
-        opponentAvatarLabel.setAlignment(Qt.AlignCenter)
-
         opponentWinsCountLabel = QLabel('1337 výher', self)
         opponentWinsCountLabel.setAlignment(Qt.AlignCenter)
 
         self.layout().addWidget(opponentNameLabel)
-        self.layout().addWidget(opponentAvatarLabel)
+        self.layout().addWidget(OpponentAvatarLabel(self))
         self.layout().addWidget(opponentWinsCountLabel)
+
+class OpponentAvatarLabel(QLabel):
+    def __init__(self, *args, **kwargs):
+        super(OpponentAvatarLabel, self).__init__(*args, **kwargs)
+
+        self.setMinimumSize(40, 40)
+        self.originalPixmap = QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/avatar.png')))
+        self.setAlignment(Qt.AlignCenter)
+
+    def resizeEvent(self, event):
+        self.setPixmap(self.originalPixmap.scaled(self.size(), Qt.KeepAspectRatio))
+
 
 
 class AbandonButton(QPushButton):
