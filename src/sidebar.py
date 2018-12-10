@@ -1,6 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+import sys
 
 
 class Sidebar(QWidget):
@@ -17,12 +18,12 @@ class Sidebar(QWidget):
         timePanel = TimePanel()
         historyPanel = HistoryPanel()
         oponentPanel = OpponentPanel()
-        abadonButton = QPushButton('Vzdát se')
+        abandonButton = AbandonButton()
 
         layout.addWidget(timePanel, 3)
         layout.addWidget(historyPanel, 3)
         layout.addWidget(oponentPanel, 3)
-        layout.addWidget(abadonButton, 1)
+        layout.addWidget(abandonButton, 1)
 
         self.setLayout(layout)
 
@@ -111,8 +112,20 @@ class OpponentPanel(InfoPanel):
         opponentNameLabel = QLabel('Jan Novák')
         opponentNameLabel.setAlignment(Qt.AlignCenter)
 
-        opponentWinsCountLabel = QLabel('1337 výher');
+        opponentWinsCountLabel = QLabel('1337 výher')
         opponentWinsCountLabel.setAlignment(Qt.AlignCenter)
 
         self.layout().addWidget(opponentNameLabel)
         self.layout().addWidget(opponentWinsCountLabel)
+
+
+class AbandonButton(QPushButton):
+    def __init__(self, *args, **kwargs):
+        super(AbandonButton, self).__init__(*args, **kwargs)
+
+        self.setText('Vzdát se')
+        self.released.connect(self.showDialog)
+
+    def showDialog(self):
+        if QMessageBox.Yes == QMessageBox.question(self, 'Vzdát se', 'Opravdu se chcete vzdát?'):
+            sys.exit()  # @todo This should end game not the program
