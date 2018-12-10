@@ -89,6 +89,8 @@ class HistoryPanel(InfoPanel):
         table.setRowCount(len(moves))
         table.horizontalHeader().setVisible(False)
         table.verticalHeader().setVisible(False)
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         row = 0
         for move in moves:
