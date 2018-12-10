@@ -50,20 +50,11 @@ class TimePanel(InfoPanel):
 
         self.labelTimeIndicator = LabelTimeIndicator(self)
         self.circularTimeIndicator = CircularTimeIndicator(self)
+        self.onTurnLabel = OnTurnLabel(self)
 
         self.resetRound()
 
-
-
-
-
-        onTurnLabel = QLabel('Jste na řadě!', self)
-        onTurnLabel.setAlignment(Qt.AlignCenter)
-
-
-
-
-        self.layout().addWidget(onTurnLabel)
+        self.layout().addWidget(self.onTurnLabel)
         self.layout().addWidget(self.circularTimeIndicator)
         self.layout().addWidget(self.labelTimeIndicator)
 
@@ -72,6 +63,23 @@ class TimePanel(InfoPanel):
 
         self.labelTimeIndicator.reset()
         self.circularTimeIndicator.reset()
+        self.onTurnLabel.switchPlayer()
+
+
+class OnTurnLabel(QLabel):
+    def __init__(self, *args, **kwargs):
+        super(OnTurnLabel, self).__init__(*args, **kwargs)
+
+        self.texts = ['Jste na řadě!', 'Protihráč je na řadě']
+        self.textIndex = 0
+
+        self.setAlignment(Qt.AlignCenter)
+
+        self.switchPlayer()
+
+    def switchPlayer(self):
+        self.textIndex = (self.textIndex + 1) % 2
+        self.setText(self.texts[self.textIndex])
 
 
 class LabelTimeIndicator(QLabel):
