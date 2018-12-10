@@ -1,7 +1,6 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import sys
 
 
 class Sidebar(QWidget):
@@ -128,4 +127,7 @@ class AbandonButton(QPushButton):
 
     def showDialog(self):
         if QMessageBox.Yes == QMessageBox.question(self, 'Vzdát se', 'Opravdu se chcete vzdát?'):
-            sys.exit()  # @todo This should end game not the program
+            from menu_window import MenuWindow
+            self.cams = MenuWindow()
+            self.cams.show()
+            self.window().close()
