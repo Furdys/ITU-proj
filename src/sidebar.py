@@ -61,6 +61,7 @@ class TimePanel(InfoPanel):
         self.redrawTime()
 
         self.layout().addWidget(onTurnLabel)
+        self.layout().addWidget(CircularTimeIndicator())
         self.layout().addWidget(self.remainingTimeLabel)
 
     def subSecond(self):
@@ -76,6 +77,40 @@ class TimePanel(InfoPanel):
             self.remainingTimeLabel.setText('{0} sekundy'.format(self.secondsRemaining))
         else:
             self.remainingTimeLabel.setText('{0} sekunda'.format(self.secondsRemaining))
+
+class CircularTimeIndicator(QWidget):
+    def __init__(self, *args, **kwargs):
+        super(CircularTimeIndicator, self).__init__(*args, **kwargs)
+
+        self.sampling = 100
+        self.timer = 15000
+
+        timer = QTimer(self)
+        timer.timeout.connect(self.subTimer)
+        timer.start(self.sampling)
+
+    def subTimer(self):
+        if self.timer >= self.sampling:
+            self.timer -= self.sampling
+            self.repaint()
+
+    def paintEvent(self, event):
+
+        painter = QPainter(self)
+
+        pen = QPen()
+        pen.setWidth(2)
+        pen.setColor(Qt.white)
+        painter.setPen(pen)
+
+        diameter = min(self.width(), self.height())
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.begin(self)
+        rectange = QRectF(0, 0, diameter, diameter)
+        angle = self.timer / 15000 * 360
+        painter.drawArc(rectange, 90*16, angle*16)
+        painter.end()
 
 
 class HistoryPanel(InfoPanel):
