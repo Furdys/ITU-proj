@@ -46,6 +46,10 @@ class MenuWindow(QMainWindow):
         playButton.clicked.connect(self.chessboardWindow_onClick)
 
         settingsButton = QPushButton('Nastavení', self)
+        settingsButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/settingsIcon.png')))))
+        settingsButton.setIconSize(QSize(40,40))
+        settingsButton.clicked.connect(self.showSettings_onClick)
+
         testbutton2 = QPushButton('Test 2', self)
         testbutton3 = QPushButton('Test 3', self)
         testbutton4 = QPushButton('Test 4', self)
@@ -72,6 +76,9 @@ class MenuWindow(QMainWindow):
         self.cams = MainWindow()
         self.cams.show()
         self.close()
+
+    def showSettings_onClick(self):
+
 
 
 
