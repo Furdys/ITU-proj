@@ -58,7 +58,7 @@ class TimePanel(InfoPanel):
         self.resetRound()
 
         self.layout().addWidget(self.onTurnLabel)
-        self.layout().addWidget(self.circularTimeIndicator)
+        self.layout().addWidget(self.circularTimeIndicator, 1)
         self.layout().addWidget(self.labelTimeIndicator)
 
     def resetRound(self):
@@ -126,14 +126,16 @@ class CircularTimeIndicator(QWidget):
 
         self.setMinimumSize(40, 40)
 
-        self.sampling = 100
+        self.sampling = 10
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.repaint)
         self.timer.start(self.sampling)
 
     def paintEvent(self, event):
-        lineWidth = 2
+        margin = 10
+
+        lineWidth = 1 + round(min(self.width(), self.height()) / 30)
         lineWidthHalf = math.ceil(lineWidth/2)
 
         painter = QPainter(self)
@@ -144,10 +146,10 @@ class CircularTimeIndicator(QWidget):
         pen.setColor(Qt.white)
         painter.setPen(pen)
 
-        diameter = min(self.width(), self.height()) - lineWidthHalf*2
+        diameter = min(self.width(), self.height()) - lineWidthHalf*2 - margin*2
         xPosStart = math.floor((self.width() - diameter) / 2)
 
-        rectangle = QRectF(xPosStart, lineWidthHalf, diameter, diameter)
+        rectangle = QRectF(xPosStart, lineWidthHalf + margin, diameter, diameter)
         angle = self.parent().roundTimer.remainingTime() / self.parent().roundLength * 360
 
         painter.drawArc(rectangle, 90*16, angle*16)
@@ -199,19 +201,20 @@ class OpponentPanel(InfoPanel):
         opponentWinsCountLabel.setAlignment(Qt.AlignCenter)
 
         self.layout().addWidget(opponentNameLabel)
-        self.layout().addWidget(OpponentAvatarLabel(self))
+        self.layout().addWidget(OpponentAvatarLabel(self), 1)
         self.layout().addWidget(opponentWinsCountLabel)
 
 class OpponentAvatarLabel(QLabel):
     def __init__(self, *args, **kwargs):
         super(OpponentAvatarLabel, self).__init__(*args, **kwargs)
 
-        self.setMinimumSize(40, 40)
+        self.margin = 10
+        self.setMinimumSize(50 + self.margin, 50 + self.margin)
         self.originalPixmap = QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/avatar.png')))
         self.setAlignment(Qt.AlignCenter)
 
     def resizeEvent(self, event):
-        self.setPixmap(self.originalPixmap.scaled(self.size(), Qt.KeepAspectRatio))
+        self.setPixmap(self.originalPixmap.scaled(self.width() - self.margin*2, self.height() - self.margin*2, Qt.KeepAspectRatio | Qt.SmoothTransformation))
 
 
 
