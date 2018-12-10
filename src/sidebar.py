@@ -162,32 +162,36 @@ class HistoryPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
         super(HistoryPanel, self).__init__(*args, **kwargs)
 
-        table = QTableWidget(self)
+        self.table = QTableWidget(self)
 
-        moves = [
-            ('g3', 'e5'),
-            ('Bg2', 'f5'),
-            ('Nh3', 'c5'),
-            ('O-O', 'Ne7'),
-        ]
+        self.moves = []
 
-        table.setColumnCount(2)
-        table.setRowCount(len(moves))
-        table.horizontalHeader().setVisible(False)
-        table.verticalHeader().setVisible(False)
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setColumnCount(2)
+        self.table.horizontalHeader().setVisible(False)
+        self.table.verticalHeader().setVisible(False)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
-        row = 0
-        for move in moves:
-            table.setItem(row, 0, QTableWidgetItem(move[0]))
-            table.setItem(row, 1, QTableWidgetItem(move[1]))
-            row += 1
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # Stretch to 100% width available
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # Stretch to 100% width available
 
         self.layout().addWidget(QLabel('Historie tahů'))
-        self.layout().addWidget(table)
+        self.layout().addWidget(self.table)
+
+        self.storeMove('aa', 'bb')
+        self.storeMove('cc', 'dd')
+
+    @pyqtSlot(str, str)
+    def storeMove(self, arg1, arg2):
+        self.moves = [(arg1, arg2)] + self.moves
+
+        self.table.setRowCount(len(self.moves))
+
+        row = 0
+        for move in self.moves:
+            self.table.setItem(row, 0, QTableWidgetItem(move[0]))
+            self.table.setItem(row, 1, QTableWidgetItem(move[1]))
+            row += 1
 
 
 class OpponentPanel(InfoPanel):
@@ -204,6 +208,7 @@ class OpponentPanel(InfoPanel):
         self.layout().addWidget(OpponentAvatarLabel(self), 1)
         self.layout().addWidget(opponentWinsCountLabel)
 
+
 class OpponentAvatarLabel(QLabel):
     def __init__(self, *args, **kwargs):
         super(OpponentAvatarLabel, self).__init__(*args, **kwargs)
@@ -215,7 +220,6 @@ class OpponentAvatarLabel(QLabel):
 
     def resizeEvent(self, event):
         self.setPixmap(self.originalPixmap.scaled(self.width() - self.margin*2, self.height() - self.margin*2, Qt.KeepAspectRatio | Qt.SmoothTransformation))
-
 
 
 class AbandonButton(QPushButton):
