@@ -27,4 +27,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(QWidget())
         self.centralWidget().setLayout(layout)
 
+        self.setStyleSheet("""
+            background-color: #272C38;
+            color: #ffffff
+            """)
+
         self.show()

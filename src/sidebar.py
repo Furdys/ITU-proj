@@ -27,13 +27,19 @@ class Sidebar(QWidget):
         self.setLayout(layout)
 
 
-class InfoPanel(QFrame):
+class InfoPanel(QWidget):
     def __init__(self, *args, **kwargs):
         super(InfoPanel, self).__init__(*args, **kwargs)
 
-        self.setFrameStyle(QFrame.Panel | QFrame.Plain)
-        self.setLineWidth(2)
-        self.setLayout(QVBoxLayout(self))
+
+class InfoPanel(QFrame):    # QFrame instead of QWidget to fill content margin with bg color
+    def __init__(self, *args, **kwargs):
+        super(InfoPanel, self).__init__(*args, **kwargs)
+        self.setStyleSheet("background-color: #1F232D")
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(0)
+        self.setLayout(layout)
 
 
 class TimePanel(InfoPanel):
