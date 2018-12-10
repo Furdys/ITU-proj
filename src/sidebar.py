@@ -7,13 +7,13 @@ import sys
 class Sidebar(QWidget):
 
     def __init__(self, *args, **kwargs):
-        super(QWidget, self).__init__(*args, **kwargs)
+        super(Sidebar, self).__init__(*args, **kwargs)
 
         self.initUI()
 
 
     def initUI(self):
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         timePanel = TimePanel()
         historyPanel = HistoryPanel()
@@ -34,7 +34,7 @@ class InfoPanel(QFrame):
 
         self.setFrameStyle(QFrame.Panel | QFrame.Plain)
         self.setLineWidth(2)
-        self.setLayout(QVBoxLayout())
+        self.setLayout(QVBoxLayout(self))
 
 
 class TimePanel(InfoPanel):
@@ -43,7 +43,7 @@ class TimePanel(InfoPanel):
     def __init__(self, *args, **kwargs):
         super(TimePanel, self).__init__(*args, **kwargs)
 
-        onTurnLabel = QLabel('Jste na řadě!')
+        onTurnLabel = QLabel('Jste na řadě!', self)
         onTurnLabel.setAlignment(Qt.AlignCenter)
 
         timer = QTimer(self)
@@ -51,7 +51,7 @@ class TimePanel(InfoPanel):
         timer.start(1000)
 
         self.secondsRemaining = 15
-        self.remainingTimeLabel = QLabel()
+        self.remainingTimeLabel = QLabel(self)
         self.remainingTimeLabel.setAlignment(Qt.AlignCenter)
         self.redrawTime()
 
@@ -77,7 +77,7 @@ class HistoryPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
         super(HistoryPanel, self).__init__(*args, **kwargs)
 
-        table = QTableWidget()
+        table = QTableWidget(self)
 
         moves = [
             ('g3', 'e5'),
@@ -109,10 +109,10 @@ class OpponentPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
         super(OpponentPanel, self).__init__(*args, **kwargs)
 
-        opponentNameLabel = QLabel('Jan Novák')
+        opponentNameLabel = QLabel('Jan Novák', self)
         opponentNameLabel.setAlignment(Qt.AlignCenter)
 
-        opponentWinsCountLabel = QLabel('1337 výher')
+        opponentWinsCountLabel = QLabel('1337 výher', self)
         opponentWinsCountLabel.setAlignment(Qt.AlignCenter)
 
         self.layout().addWidget(opponentNameLabel)
