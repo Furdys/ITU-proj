@@ -5,6 +5,7 @@ from PyQt5.QtMultimedia import *
 from main_window import MainWindow
 import os
 import time
+import webbrowser
 
 class MenuWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -70,12 +71,15 @@ class MenuWindow(QMainWindow):
         settingsButton.setIconSize(QSize(40,40))
         settingsButton.clicked.connect(self.showSettings)
 
-        testbutton3 = QPushButton('Test 3', self)
+        infoButton = QPushButton('Napověda', self)
+        infoButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/infoIcon.png')))))
+        infoButton.setIconSize(QSize(40,40))
+        infoButton.clicked.connect(self.infoBrowser)
 
         grid.addWidget(playAIButton, 0,1)
         grid.addWidget(playOfflineButton, 1,1)
         grid.addWidget(playOnlineButton, 2,1)
-        grid.addWidget(testbutton3, 3,1)
+        grid.addWidget(infoButton, 3,1)
         grid.addWidget(settingsButton, 4,1)
         menu.setLayout(grid)
 
@@ -111,7 +115,9 @@ class MenuWindow(QMainWindow):
             QSound.play(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sound/foundSound.wav')))
             self.chessboardWindow_onClick()
 
-
+    @pyqtSlot()
+    def infoBrowser(self):
+        webbrowser.open('https://www.chess.com/cs/learn-how-to-play-chess')
 
     def createSettingsLayout(self):
         settings = QWidget()
@@ -127,18 +133,51 @@ class MenuWindow(QMainWindow):
                 height: 48px;
                 width: 200px;
             }
-                           """)
+            
+            QComboBox {
+                background-color: #3C6478;
+                font: bold 16px;
+                color: #FFF;
+                height: 48px;
+                width: 200px;
+                text-align: center;           
+            
+            }
+            
+            QListView {
+                color: white;
+            }
+                           
+            QLabel {
+                color:  #FFF;
+                font: bold 14px;
+                min-width: 2em;
+                text - align: center;
+                }
+                
+                    """)
 
         grid = QGridLayout()
         grid.setSpacing(25)
+        grid.setHorizontalSpacing(5)
 
+        grid.addWidget(QLabel("Mód: "),0,0)
 
+        comboBox = QComboBox()
+        comboBox.setEditable(True)
+        comboBox.lineEdit().setAlignment(Qt.AlignCenter)
+        comboBox.lineEdit().setReadOnly(True)
+        comboBox.addItem("Classic (15+15)")
+        comboBox.addItem("Rapid (10+0)")
+        comboBox.addItem("Blitz (5+3)")
+        comboBox.addItem("Bullet (2+1)")
 
         returnButton = QPushButton('Zpět', self)
         returnButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/returnIcon.png')))))
         returnButton.setIconSize(QSize(40,40))
         returnButton.clicked.connect(self.returnToMenu)
-        grid.addWidget(returnButton, 0,1)
+        grid.addWidget(comboBox, 0, 1)
+        grid.addWidget(returnButton, 1, 0, 2, Qt.AlignHCenter)
         settings.setLayout(grid)
 
         hbox = QHBoxLayout()
