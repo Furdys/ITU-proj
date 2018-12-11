@@ -38,7 +38,7 @@ class InfoPanel(QFrame):    # QFrame instead of QWidget to fill content margin w
     def __init__(self, *args, **kwargs):
         super(InfoPanel, self).__init__(*args, **kwargs)
 
-        self.setStyleSheet("background-color: #1F232D")
+        self.setStyleSheet("background-color: #cccccc")
 
         # Prepare the layout for panel
         layout = QVBoxLayout(self)
