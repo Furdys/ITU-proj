@@ -1,6 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtMultimedia import *
 from main_window import MainWindow
 import os
 
@@ -81,6 +82,11 @@ class MenuWindow(QMainWindow):
         self.selectMenuWidget.setLayout(vbox)
         self.centralWidget().layout().addWidget(self.selectMenuWidget)
         #self.centralWidget().setLayout(vbox)
+
+        testbutton2.released.connect(self.testSound)
+
+    def testSound(self):
+        QSound.play(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sound/piecePlaced.wav')))
 
     @pyqtSlot()
     def chessboardWindow_onClick(self):
