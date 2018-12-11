@@ -212,7 +212,7 @@ class HistoryPanel(InfoPanel):
     @pyqtSlot(str, str)
     def storeMove(self, arg1, arg2):
         # Store new data
-        self.moves = [(arg1 + arg2)] + self.moves
+        self.moves = [(arg1, arg2)] + self.moves
 
         # Update table settings
         self.table.setRowCount(self.table.rowCount() + 1)
