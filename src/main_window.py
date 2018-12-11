@@ -1,7 +1,8 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5 import QtCore
 from sidebar import Sidebar
+from board import Board
 
 
 class MainWindow(QMainWindow):
@@ -18,7 +19,9 @@ class MainWindow(QMainWindow):
 
         layout = QHBoxLayout()
 
-        playingFiled = QLabel('Playing field')
+        playingFiled = Board()
+        playingFiled.setObjectName("boardPlayer")
+        playingFiled.createBord()
         sidebar = Sidebar()
 
         layout.addWidget(playingFiled, 3)   # Takes 3 times more space than sidebar
@@ -27,9 +30,5 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(QWidget())
         self.centralWidget().setLayout(layout)
 
-        self.setStyleSheet("""
-            background-color: #272C38;
-            color: #ffffff
-            """)
-
+        playingFiled.playerChanged.connect(sidebar.TimePanel.boardSays)
         self.show()

@@ -16,6 +16,7 @@ class Sidebar(QWidget):
     def initUI(self):
         # Create widgets for the sidebar
         timePanel = TimePanel()
+        self.TimePanel = timePanel
         historyPanel = HistoryPanel()
         oponentPanel = OpponentPanel()
         abandonButton = AbandonButton()
@@ -77,6 +78,10 @@ class TimePanel(InfoPanel):
         self.labelTimeIndicator.reset()
         self.circularTimeIndicator.reset()
         self.onTurnLabel.switchPlayer()
+
+    pyqtSlot()
+    def boardSays(self):
+        self.resetRound()
 
 
 class OnTurnLabel(QLabel):
@@ -223,7 +228,6 @@ class HistoryPanel(InfoPanel):
             self.table.setItem(row, 0, QTableWidgetItem(move[0]))
             self.table.setItem(row, 1, QTableWidgetItem(move[1]))
             row += 1
-
 
 class OpponentPanel(InfoPanel):
     def __init__(self, *args, **kwargs):
