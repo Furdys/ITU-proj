@@ -1,8 +1,10 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+#from PyQt5.QtMultimedia import *
 from main_window import MainWindow
 import os
+import time
 
 class MenuWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -11,8 +13,8 @@ class MenuWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Chess Menu')
-        self.resize(700, 500)
+        self.setWindowTitle('Šachy')
+       # self.resize(200, 400)
         self.setCentralWidget(QWidget())
         self.stacked_layout = QStackedLayout()
         self.centralWidget().setLayout(self.stacked_layout)
@@ -48,25 +50,33 @@ class MenuWindow(QMainWindow):
 
         grid = QGridLayout()
         grid.setSpacing(25)
-        playButton = QPushButton('Hrát', self)
-        playButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))))
-        playButton.setIconSize(QSize(40,40))
-        playButton.clicked.connect(self.chessboardWindow_onClick)
+        playAIButton = QPushButton('Hrát proti A.I.', self)
+        playAIButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))))
+        playAIButton.setIconSize(QSize(40,40))
+        playAIButton.clicked.connect(self.chessboardWindow_onClick)
+
+        playOfflineButton = QPushButton('Hrát offline.', self)
+        playOfflineButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))))
+        playOfflineButton.setIconSize(QSize(40,40))
+        playOfflineButton.clicked.connect(self.chessboardWindow_onClick)
+
+        playOnlineButton = QPushButton('Hrát online.', self)
+        playOnlineButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/playIcon.png')))))
+        playOnlineButton.setIconSize(QSize(40,40))
+        playOnlineButton.clicked.connect(self.inviteDialog_onClick)
 
         settingsButton = QPushButton('Nastavení', self)
         settingsButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/settingsIcon.png')))))
         settingsButton.setIconSize(QSize(40,40))
         settingsButton.clicked.connect(self.showSettings)
 
-        testbutton2 = QPushButton('Test 2', self)
         testbutton3 = QPushButton('Test 3', self)
-        testbutton4 = QPushButton('Test 4', self)
 
-        grid.addWidget(playButton, 0,1)
-        grid.addWidget(settingsButton, 1,1)
-        grid.addWidget(testbutton2, 2,1)
+        grid.addWidget(playAIButton, 0,1)
+        grid.addWidget(playOfflineButton, 1,1)
+        grid.addWidget(playOnlineButton, 2,1)
         grid.addWidget(testbutton3, 3,1)
-        grid.addWidget(testbutton4, 4,1)
+        grid.addWidget(settingsButton, 4,1)
         menu.setLayout(grid)
 
         hbox = QHBoxLayout()
@@ -92,6 +102,17 @@ class MenuWindow(QMainWindow):
     def showSettings(self):
         self.stacked_layout.setCurrentIndex(1)
 
+    @pyqtSlot()
+    def inviteDialog_onClick(self):
+        inviteDialog = InviteDialog()
+        inviteDialog.exec()
+
+        if (inviteDialog.playerFound()):
+   #         QSound.play(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sound/foundSound.wav')))
+            self.chessboardWindow_onClick()
+
+
+
     def createSettingsLayout(self):
         settings = QWidget()
         settings.setStyleSheet("""
@@ -110,6 +131,7 @@ class MenuWindow(QMainWindow):
 
         grid = QGridLayout()
         grid.setSpacing(25)
+
 
 
         returnButton = QPushButton('Zpět', self)
@@ -134,6 +156,73 @@ class MenuWindow(QMainWindow):
     @pyqtSlot()
     def returnToMenu(self):
         self.stacked_layout.setCurrentIndex(0)
+
+class InviteDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        self.setFixedSize(250,100)
+        self.found = False
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #1F232D;
+            }
+            QLabel {
+                color: #FFF;
+                background-color: #3C6478;
+                border-style: outset;
+                border-width: 2px;
+                border-radius: 10px;
+                font: bold 14px;
+                min-width: 10em;
+                text-align: center;
+            }
+
+    
+                        """)
+
+        inviteLink = QLabel('Odkaz na hru')
+        inviteLink.setAlignment(Qt.AlignCenter)
+        inviteLink.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        cancelButton = QPushButton("Zrušiť")
+        cancelButton.setStyleSheet("""
+            QPushButton {
+                background-color: darkred;
+                font-weight: bold;
+                color: #FFF;
+                height: 48px;
+                width: 200px;
+        }
+        
+                            """)
+
+        cancelButton.clicked.connect(self.close)
+        clipboardButton = QPushButton()
+        clipboardButton.setIcon(QIcon(QPixmap(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'img/clipboardIcon.png')))))
+        clipboardButton.setIconSize(QSize(25, 25))
+        clipboardButton.clicked.connect(self.copyToClipboard)
+
+        hbox = QHBoxLayout()
+        hbox.stretch(1)
+        hbox.addWidget(inviteLink)
+        hbox.addWidget(clipboardButton)
+        self.dialogLayout = QVBoxLayout()
+        self.dialogLayout.addLayout(hbox)
+        #self.dialogLayout.addWidget(inviteLink)
+        self.dialogLayout.addWidget(cancelButton)
+        self.setLayout(self.dialogLayout)
+
+    @pyqtSlot()
+    def copyToClipboard(self):
+        clipboard = QApplication.clipboard()
+        clipboard.setText("Odkaz na hru")
+        time.sleep(10)
+        self.found = True
+        self.close()
+
+    def playerFound(self):
+        return self.found
+
 
 
 
