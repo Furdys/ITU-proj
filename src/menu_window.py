@@ -1,7 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-#from PyQt5.QtMultimedia import *
+from PyQt5.QtMultimedia import *
 from main_window import MainWindow
 import os
 import time
@@ -108,7 +108,7 @@ class MenuWindow(QMainWindow):
         inviteDialog.exec()
 
         if (inviteDialog.playerFound()):
-   #         QSound.play(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sound/foundSound.wav')))
+            QSound.play(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sound/foundSound.wav')))
             self.chessboardWindow_onClick()
 
 
