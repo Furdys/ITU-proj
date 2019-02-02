@@ -20,6 +20,6 @@ Presentation: [presenation.pdf](./doc/presenation.pdf) (in Czech)
 Funkční implementace, byly využity moderní technologie, základní verze, málo specifikované potřeby uživatele (s obecným uživatelem se špatně pracuje), tedy není zaměřeno na žádnou konkrétní úlohu. Tech. popis implementace spíše obecný a povrchní.
 
 ## Screenshots
-![Game window](./doc/screeshots/game.png)
-![Main menu](./doc/screeshots/main_menu.png)
+![Game window](./doc/screenshots/game.png)
+![Main menu](./doc/screenshots/main_menu.png)
 
