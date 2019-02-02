@@ -4,7 +4,7 @@ Bachelor study at FIT VUT Brno
 Subject: **User Interface Programming (ITU)**  
 
 Task: [task.pdf](./doc/task.pdf) (in Czech)  
-Presentation: [presenation.pdf](./doc/presenation.pdf) (in Czech)  
+Presentation: [presentation.pdf](./doc/presentation.pdf) (in Czech)  
 
 ## Authors
 * Jiří Furda *(xfurda00)* - Basic layout, sidepanel in game window
