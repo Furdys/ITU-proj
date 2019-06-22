@@ -1,7 +1,7 @@
 # Game "Chess" (ITU project)
 Bachelor study at FIT VUT Brno  
 5th semester - winter 2018  
-Subject: **User Interface Programming (ITU)**  
+Course: **User Interface Programming (ITU)**  
 
 Task: [task.pdf](./doc/task.pdf) (in Czech)  
 Presentation: [presentation.pdf](./doc/presentation.pdf) (in Czech)  
